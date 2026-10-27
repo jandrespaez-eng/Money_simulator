@@ -8,7 +8,7 @@ interface CardProps {
 
 export function Card({ children, className }: CardProps) {
   return (
-    <div className={cn("rounded-xl bg-white border border-slate-200 shadow-sm", className)}>
+    <div className={cn("rounded-lg bg-white border border-gray-200 shadow-sm", className)}>
       {children}
     </div>
   );
@@ -16,7 +16,7 @@ export function Card({ children, className }: CardProps) {
 
 export function CardHeader({ children, className }: CardProps) {
   return (
-    <div className={cn("px-6 py-4 border-b border-slate-200", className)}>
+    <div className={cn("px-6 py-5 border-b border-gray-100", className)}>
       {children}
     </div>
   );
@@ -24,7 +24,7 @@ export function CardHeader({ children, className }: CardProps) {
 
 export function CardContent({ children, className }: CardProps) {
   return (
-    <div className={cn("px-6 py-4", className)}>
+    <div className={cn("px-6 py-5", className)}>
       {children}
     </div>
   );
@@ -32,7 +32,7 @@ export function CardContent({ children, className }: CardProps) {
 
 export function CardTitle({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <h3 className={cn("text-lg font-semibold text-slate-900", className)}>
+    <h3 className={cn("text-h3 font-serif font-normal text-carbon", className)}>
       {children}
     </h3>
   );
@@ -40,7 +40,7 @@ export function CardTitle({ children, className }: { children: ReactNode; classN
 
 export function CardDescription({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <p className={cn("text-sm text-slate-600", className)}>
+    <p className={cn("text-body text-gray-600 mt-1", className)}>
       {children}
     </p>
   );

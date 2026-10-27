@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { dataStore } from "@/lib/data-store";
 import { calculateFinancials, formatCurrency, getScenarioTypeLabel } from "@/lib/financial-engine";
-import { Plus, TrendingUp, Wallet, Target } from "lucide-react";
+import { Plus, TrendingUp, DollarSign, Wallet, Sparkles, Search, FileText } from "lucide-react";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -13,12 +13,12 @@ export default function HomePage() {
     return (
       <AppLayout>
         <div className="max-w-4xl mx-auto">
-          <div className="text-center py-16">
-            <h1 className="text-3xl font-bold text-slate-900 mb-4">
-              Bienvenido a Life Simulator
+          <div className="text-center py-24">
+            <h1 className="font-serif text-hero text-carbon mb-6">
+              Bienvenido a<br />A Mi Manera
             </h1>
-            <p className="text-lg text-slate-600 mb-8">
-              Explora posibilidades, diseña tu vida ideal y planifica tu futuro financiero
+            <p className="text-body-lg text-gray-600 mb-12 max-w-2xl mx-auto">
+              Explora posibilidades, diseña tu vida ideal y planifica tu futuro financiero con claridad y confianza.
             </p>
             <Link href="/escenarios">
               <Button size="lg">
@@ -34,165 +34,221 @@ export default function HomePage() {
 
   const planItems = dataStore.planItems.getByScenario(activeScenario.id);
   const calculation = calculateFinancials(activeScenario, planItems);
+  const dream = dataStore.lifestyleDreams.getByScenario(activeScenario.id);
 
   return (
     <AppLayout>
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="space-y-10">
+        {/* Hero Section */}
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            Panel de control
+          <h1 className="font-serif text-display text-carbon mb-3">
+            Tu plan de vida
           </h1>
-          <p className="text-slate-600">
-            Escenario activo: {activeScenario.name}
+          <p className="text-body-lg text-gray-600">
+            {getScenarioTypeLabel(activeScenario.type)} · Creado el {activeScenario.createdAt.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}
           </p>
         </div>
 
+        {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-slate-600 mb-1">Capital inicial neto</p>
-                  <p className="text-2xl font-bold text-slate-900">
-                    {formatCurrency(activeScenario.netStartingCapital, activeScenario.currency)}
-                  </p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="rounded-lg bg-bosque/10 p-3">
+                  <Wallet className="h-6 w-6 text-bosque" />
                 </div>
-                <div className="rounded-full bg-blue-100 p-3">
-                  <Wallet className="h-6 w-6 text-blue-600" />
-                </div>
+                <span className="badge-calculated">Calculado</span>
               </div>
+              <p className="text-body-sm text-gray-600 mb-2">Capital inicial neto</p>
+              <p className="font-serif text-h1 text-carbon tabular-nums">
+                {formatCurrency(activeScenario.netStartingCapital, activeScenario.currency)}
+              </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-slate-600 mb-1">Capital restante</p>
-                  <p className="text-2xl font-bold text-slate-900">
-                    {formatCurrency(calculation.remainingCapital, activeScenario.currency)}
-                  </p>
+              <div className="flex items-start justify-between mb-4">
+                <div className="rounded-lg bg-bosque/10 p-3">
+                  <TrendingUp className="h-6 w-6 text-bosque" />
                 </div>
-                <div className="rounded-full bg-green-100 p-3">
-                  <TrendingUp className="h-6 w-6 text-green-600" />
-                </div>
+                <span className="badge-calculated">Calculado</span>
               </div>
+              <p className="text-body-sm text-gray-600 mb-2">Capital disponible</p>
+              <p className="font-serif text-h1 text-carbon tabular-nums">
+                {formatCurrency(calculation.remainingCapital, activeScenario.currency)}
+              </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-slate-600 mb-1">Flujo mensual neto</p>
-                  <p className={`text-2xl font-bold ${
-                    calculation.netMonthlyCashFlow >= 0 ? "text-green-600" : "text-red-600"
-                  }`}>
-                    {formatCurrency(calculation.netMonthlyCashFlow, activeScenario.currency)}
-                  </p>
+              <div className="flex items-start justify-between mb-4">
+                <div className={`rounded-lg p-3 ${
+                  calculation.netMonthlyCashFlow >= 0 ? 'bg-green-100' : 'bg-orange-100'
+                }`}>
+                  <DollarSign className={`h-6 w-6 ${
+                    calculation.netMonthlyCashFlow >= 0 ? 'text-green-700' : 'text-orange-700'
+                  }`} />
                 </div>
-                <div className="rounded-full bg-purple-100 p-3">
-                  <Target className="h-6 w-6 text-purple-600" />
-                </div>
+                <span className="badge-calculated">Calculado</span>
               </div>
+              <p className="text-body-sm text-gray-600 mb-2">Flujo de caja mensual</p>
+              <p className={`font-serif text-h1 tabular-nums ${
+                calculation.netMonthlyCashFlow >= 0 ? 'text-green-700' : 'text-orange-700'
+              }`}>
+                {formatCurrency(calculation.netMonthlyCashFlow, activeScenario.currency)}
+              </p>
             </CardContent>
           </Card>
         </div>
 
+        {/* Two Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Tu escenario</CardTitle>
-              <CardDescription>{getScenarioTypeLabel(activeScenario.type)}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Tipo de escenario</span>
-                  <span className="font-medium">{getScenarioTypeLabel(activeScenario.type)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Moneda</span>
-                  <span className="font-medium">{activeScenario.currency}</span>
-                </div>
-                {activeScenario.grossProceeds && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Monto bruto</span>
-                    <span className="font-medium">
-                      {formatCurrency(activeScenario.grossProceeds, activeScenario.currency)}
-                    </span>
+          {/* Left Column - Dream */}
+          {dream ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Tu visión de vida</CardTitle>
+                <CardDescription>{dream.title}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-body text-gray-700 line-clamp-3">
+                  {dream.description}
+                </p>
+                {dream.hobbiesActivities.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {dream.hobbiesActivities.slice(0, 3).map((activity) => (
+                      <span
+                        key={activity}
+                        className="inline-flex items-center rounded-full bg-bosque/10 px-3 py-1 text-body-sm font-medium text-bosque"
+                      >
+                        {activity}
+                      </span>
+                    ))}
                   </div>
                 )}
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Horizonte temporal</span>
-                  <span className="font-medium">{activeScenario.timeHorizon} años</span>
+                <Link href="/disena">
+                  <Button variant="outline" className="w-full">
+                    Ver detalles completos
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardContent className="py-16 text-center">
+                <div className="rounded-full bg-bosque/10 w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <Sparkles className="h-8 w-8 text-bosque" />
                 </div>
+                <h3 className="font-serif text-h3 text-carbon mb-2">
+                  Diseña tu vida ideal
+                </h3>
+                <p className="text-body text-gray-600 mb-6">
+                  Describe cómo imaginas tu futuro y déjanos ayudarte a planificarlo
+                </p>
+                <Link href="/disena">
+                  <Button>
+                    Empezar ahora
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Right Column - Plan Items */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Elementos en tu plan</CardTitle>
+                  <CardDescription>
+                    {planItems.length} elementos seleccionados
+                  </CardDescription>
+                </div>
+                <Link href="/plan">
+                  <Button variant="text" size="sm">
+                    Ver todo
+                  </Button>
+                </Link>
               </div>
-              <Link href="/escenarios">
-                <Button variant="outline" className="w-full">
-                  Ver detalles
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Acciones rápidas</CardTitle>
-              <CardDescription>Explora y diseña tu vida ideal</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Link href="/disena" className="block">
-                <Button variant="outline" className="w-full justify-start">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Diseñar mi estilo de vida
-                </Button>
-              </Link>
-              <Link href="/explorar" className="block">
-                <Button variant="outline" className="w-full justify-start">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Explorar opciones
-                </Button>
-              </Link>
-              <Link href="/plan" className="block">
-                <Button variant="outline" className="w-full justify-start">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Ver mi plan financiero
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-
-        {planItems.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Elementos en tu plan</CardTitle>
-              <CardDescription>{planItems.length} elementos seleccionados</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {planItems.slice(0, 5).map((item) => (
-                  <div key={item.id} className="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
-                    <div>
-                      <p className="font-medium text-slate-900">{item.title}</p>
-                      <p className="text-sm text-slate-600">
-                        {formatCurrency(item.acquisitionCost, activeScenario.currency)}
-                      </p>
+              {planItems.length > 0 ? (
+                <div className="space-y-4">
+                  {planItems.slice(0, 4).map((item) => (
+                    <div key={item.id} className="flex justify-between items-start pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+                      <div>
+                        <p className="font-medium text-carbon text-body">{item.title}</p>
+                        <p className="text-body-sm text-gray-600">
+                          {formatCurrency(item.acquisitionCost, activeScenario.currency)}
+                        </p>
+                      </div>
+                      {item.recurringCostMonthly > 0 && (
+                        <span className="text-body-sm text-gray-500">
+                          +{formatCurrency(item.recurringCostMonthly, activeScenario.currency)}/mes
+                        </span>
+                      )}
                     </div>
-                  </div>
-                ))}
-                {planItems.length > 5 && (
-                  <Link href="/plan">
-                    <Button variant="ghost" size="sm" className="w-full">
-                      Ver todos los elementos
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-body text-gray-600 mb-4">
+                    Aún no has agregado elementos a tu plan
+                  </p>
+                  <Link href="/explorar">
+                    <Button variant="outline" size="sm">
+                      <Search className="mr-2 h-4 w-4" />
+                      Explorar opciones
                     </Button>
                   </Link>
-                )}
-              </div>
+                </div>
+              )}
             </CardContent>
           </Card>
-        )}
+        </div>
+
+        {/* Quick Actions */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Acciones rápidas</CardTitle>
+            <CardDescription>Continúa trabajando en tu plan</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link href="/disena" className="group">
+                <div className="border border-gray-200 rounded-lg p-6 hover:border-bosque hover:bg-bosque/5 transition-all">
+                  <Sparkles className="h-6 w-6 text-bosque mb-3" />
+                  <h4 className="font-medium text-carbon text-body mb-1">Diseñar mi vida</h4>
+                  <p className="text-body-sm text-gray-600">
+                    Define tu estilo de vida ideal
+                  </p>
+                </div>
+              </Link>
+              
+              <Link href="/explorar" className="group">
+                <div className="border border-gray-200 rounded-lg p-6 hover:border-bosque hover:bg-bosque/5 transition-all">
+                  <Search className="h-6 w-6 text-bosque mb-3" />
+                  <h4 className="font-medium text-carbon text-body mb-1">Explorar opciones</h4>
+                  <p className="text-body-sm text-gray-600">
+                    Descubre propiedades y más
+                  </p>
+                </div>
+              </Link>
+              
+              <Link href="/plan" className="group">
+                <div className="border border-gray-200 rounded-lg p-6 hover:border-bosque hover:bg-bosque/5 transition-all">
+                  <FileText className="h-6 w-6 text-bosque mb-3" />
+                  <h4 className="font-medium text-carbon text-body mb-1">Ver mi plan</h4>
+                  <p className="text-body-sm text-gray-600">
+                    Análisis financiero detallado
+                  </p>
+                </div>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </AppLayout>
   );
